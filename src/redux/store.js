@@ -1,10 +1,37 @@
-import { combineReducers, createStore } from 'redux';
-import { devToolsEnhancer } from '@redux-devtools/extension';
 import { contactsReducer } from './contacts/contacts.reducer';
+import { contactsFormReducer } from './contacts/contactForm.reducer';
+import { configureStore } from '@reduxjs/toolkit';
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from 'redux-persist';
 
-const rootReducer = combineReducers({
-  contactsStore: contactsReducer,
+import storage from 'redux-persist/lib/storage';
+
+const contactsConfig = {
+  key: 'contacts',
+  storage,
+  whitelist: ['contacts'], // масив ключів, які треба пропускати в локальне сховище
+  //blacklist: масив ключів, які не треба пропускати в локальне сховище
+};
+
+export const store = configureStore({
+  reducer: {
+    contactsStore: persistReducer(contactsConfig, contactsReducer),
+    contactsFormStore: contactsFormReducer,
+  },
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoreActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
 });
 
-const enhancer = devToolsEnhancer();
-export const store = createStore(rootReducer, enhancer);
+export const persistor = persistStore(store);

@@ -72,7 +72,7 @@ export const App = () => {
   };
 
   const getFindContact = () => {
-    const normalizedFilter = filter.toLowerCase();
+    const normalizedFilter = filter ? filter.toLowerCase() : '';
 
     const filteredContacts = contacts
       ? contacts.filter(contact =>

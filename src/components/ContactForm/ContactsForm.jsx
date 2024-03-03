@@ -1,22 +1,33 @@
 import style from './ContactsForm.module.css';
-import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  inputNameChange,
+  inputNumberChange,
+  clearForm,
+} from '../../redux/contacts/contactForm.reducer';
 
 export const ContactsForm = ({ handleAddName }) => {
-  const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
+  // const [name, setName] = useState('');
+  // const [number, setNumber] = useState('');
+
+  const dispatch = useDispatch();
+  const name = useSelector(state => state.contactsFormStore.name);
+  const number = useSelector(state => state.contactsFormStore.number);
 
   const handleInputChange = e => {
-    const value = e.target.value;
-    const name = e.target.name;
+    const inputValue = e.target.value;
+    const inputName = e.target.name;
     // const number = e.target.number;
 
-    switch (name) {
+    switch (inputName) {
       case 'name': {
-        setName(value);
+        // setName(value);
+        dispatch(inputNameChange(inputValue));
         return;
       }
       case 'number': {
-        setNumber(value);
+        // setNumber(value);
+        dispatch(inputNumberChange(inputValue));
         return;
       }
       default:
@@ -34,8 +45,10 @@ export const ContactsForm = ({ handleAddName }) => {
 
     handleAddName(contactsData);
 
-    setName('');
-    setNumber('');
+    dispatch(clearForm(''));
+
+    // setName('');
+    // setNumber('');
   };
 
   return (
